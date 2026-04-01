@@ -79,6 +79,31 @@ public:
     static std::string download_profile_image_vulnerable(const std::string& image_name);
 };
 
+// CWE-119/CWE-120/CWE-121/CWE-122: Buffer Overflow vulnerabilities
+class BufferOverflowVulns {
+public:
+    // CWE-120: Buffer Copy without Checking Size of Input (strcpy)
+    static void unsafe_string_copy(const char* user_input);
+    
+    // CWE-134: Uncontrolled Format String
+    static void format_string_vulnerability(const char* user_input);
+    
+    // CWE-121: Stack-based Buffer Overflow
+    static void stack_buffer_overflow(const char* user_data);
+    
+    // CWE-122: Heap-based Buffer Overflow
+    static char* heap_buffer_overflow(const char* input);
+    
+    // CWE-126: Buffer Over-read
+    static void buffer_overread(const char* data, int length);
+    
+    // CWE-676: Use of Potentially Dangerous Function (gets, sprintf)
+    static void dangerous_function_usage();
+    
+    // CWE-805: Buffer Access with Incorrect Length Value
+    static void incorrect_buffer_length(const char* src, int wrong_length);
+};
+
 // Helper function to simulate SQL execution
 std::string execute_sql_query(const std::string& query);
 

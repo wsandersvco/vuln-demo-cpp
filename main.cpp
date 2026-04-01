@@ -349,6 +349,54 @@ int main() {
     
     std::cout << "\n=== END VERADEMO VULNERABILITIES ===\n\n";
     
+    // ========================================================================
+    // BUFFER OVERFLOW VULNERABILITIES
+    // ========================================================================
+    
+    std::cout << "\n=== BUFFER OVERFLOW VULNERABILITIES ===\n";
+    std::cout << "Testing buffer overflow vulnerabilities...\n\n";
+    
+    // CWE-120: Unsafe string copy with strcpy
+    std::cout << "--- CWE-120: Buffer Overflow (strcpy) ---\n";
+    char test_input[100];
+    std::cout << "Enter text for strcpy test: ";
+    std::cin.getline(test_input, 100);
+    BufferOverflowVulns::unsafe_string_copy(test_input);
+    
+    // CWE-134: Format string vulnerability
+    std::cout << "\n--- CWE-134: Format String Vulnerability ---\n";
+    char format_input[200];
+    std::cout << "Enter format string: ";
+    std::cin.getline(format_input, 200);
+    BufferOverflowVulns::format_string_vulnerability(format_input);
+    
+    // CWE-121: Stack-based buffer overflow
+    std::cout << "\n--- CWE-121: Stack Buffer Overflow ---\n";
+    char stack_data[150];
+    std::cout << "Enter data for stack buffer: ";
+    std::cin.getline(stack_data, 150);
+    BufferOverflowVulns::stack_buffer_overflow(stack_data);
+    
+    // CWE-122: Heap-based buffer overflow
+    std::cout << "\n--- CWE-122: Heap Buffer Overflow ---\n";
+    char heap_input[150];
+    std::cout << "Enter data for heap buffer: ";
+    std::cin.getline(heap_input, 150);
+    char* heap_result = BufferOverflowVulns::heap_buffer_overflow(heap_input);
+    free(heap_result);  // Clean up
+    
+    // CWE-126: Buffer over-read
+    std::cout << "\n--- CWE-126: Buffer Over-read ---\n";
+    char overread_data[30] = "Short data";
+    BufferOverflowVulns::buffer_overread(overread_data, 100);  // Reading beyond buffer
+    
+    // CWE-805: Incorrect buffer length
+    std::cout << "\n--- CWE-805: Incorrect Buffer Length ---\n";
+    char length_test[50] = "Test data for length";
+    BufferOverflowVulns::incorrect_buffer_length(length_test, 200);  // Wrong length
+    
+    std::cout << "\n=== END BUFFER OVERFLOW VULNERABILITIES ===\n\n";
+    
     // VULNERABLE: Log completion with user data
     log_user_action(username, "Application completed successfully");
     

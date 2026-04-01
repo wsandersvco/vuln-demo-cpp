@@ -4,6 +4,9 @@
 #include <fstream>
 #include <array>
 #include <memory>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 // Simple MD5 stub
 namespace SimpleMD5 {
@@ -106,6 +109,130 @@ std::string XMLParser::parse_xml_vulnerable(const std::string& xml_content) {
     std::cout << "[XMLParser::parse_xml_vulnerable]\n";
     std::cout << "[DEBUG] XML: " << xml_content.substr(0, 100) << "\n";
     return "[XML parsed - XXE vulnerable]";
+}
+
+// ============================================================================
+// CWE-119/120/121/122: Buffer Overflow Vulnerabilities
+// ============================================================================
+
+// CWE-120: Buffer Copy without Checking Size of Input (strcpy)
+void BufferOverflowVulns::unsafe_string_copy(const char* user_input) {
+    std::cout << "[BufferOverflowVulns::unsafe_string_copy]\n";
+    
+    /* START VULNERABILITY - CWE-120: strcpy Buffer Overflow */
+    char buffer[32];
+    strcpy(buffer, user_input);  // VULNERABLE: No bounds checking
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Copied to buffer: " << buffer << "\n";
+}
+
+// CWE-134: Uncontrolled Format String
+void BufferOverflowVulns::format_string_vulnerability(const char* user_input) {
+    std::cout << "[BufferOverflowVulns::format_string_vulnerability]\n";
+    
+    /* START VULNERABILITY - CWE-134: Format String Vulnerability */
+    char output[256];
+    sprintf(output, user_input);  // VULNERABLE: User controls format string
+    printf(user_input);           // VULNERABLE: Direct printf of user input
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Formatted output\n";
+}
+
+// CWE-121: Stack-based Buffer Overflow
+void BufferOverflowVulns::stack_buffer_overflow(const char* user_data) {
+    std::cout << "[BufferOverflowVulns::stack_buffer_overflow]\n";
+    
+    /* START VULNERABILITY - CWE-121: Stack Buffer Overflow */
+    char local_buffer[64];
+    strncpy(local_buffer, user_data, 200);  // VULNERABLE: Copies more than buffer size
+    local_buffer[63] = '\0';
+    
+    // Another vulnerability with sprintf
+    char formatted[50];
+    sprintf(formatted, "User input: %s", user_data);  // VULNERABLE: No bounds check
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Buffer contents: " << local_buffer << "\n";
+}
+
+// CWE-122: Heap-based Buffer Overflow
+char* BufferOverflowVulns::heap_buffer_overflow(const char* input) {
+    std::cout << "[BufferOverflowVulns::heap_buffer_overflow]\n";
+    
+    /* START VULNERABILITY - CWE-122: Heap Buffer Overflow */
+    char* heap_buffer = (char*)malloc(32);
+    strcpy(heap_buffer, input);  // VULNERABLE: No size check on heap buffer
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Heap buffer allocated and filled\n";
+    return heap_buffer;
+}
+
+// CWE-126: Buffer Over-read
+void BufferOverflowVulns::buffer_overread(const char* data, int length) {
+    std::cout << "[BufferOverflowVulns::buffer_overread]\n";
+    
+    /* START VULNERABILITY - CWE-126: Buffer Over-read */
+    char internal_buffer[50];
+    // Copy without checking if length exceeds data size
+    memcpy(internal_buffer, data, length);  // VULNERABLE: length not validated
+    internal_buffer[49] = '\0';
+    
+    // Reading beyond buffer bounds
+    for (int i = 0; i < length + 10; i++) {  // VULNERABLE: Reads past buffer
+        char c = data[i];
+        (void)c;  // Suppress unused warning
+    }
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Buffer read complete\n";
+}
+
+// CWE-676: Use of Potentially Dangerous Function
+void BufferOverflowVulns::dangerous_function_usage() {
+    std::cout << "[BufferOverflowVulns::dangerous_function_usage]\n";
+    
+    /* START VULNERABILITY - CWE-676: Dangerous Functions */
+    char input_buffer[100];
+    char output_buffer[50];
+    
+    // gets() is banned - extremely dangerous
+    std::cout << "Enter some text: ";
+    // gets(input_buffer);  // VULNERABLE: No bounds checking (commented to avoid crash)
+    
+    // Using scanf without width limit
+    scanf("%s", input_buffer);  // VULNERABLE: No width specifier
+    
+    // Using strcpy, strcat without bounds checking
+    strcpy(output_buffer, input_buffer);   // VULNERABLE
+    strcat(output_buffer, " - processed");  // VULNERABLE
+    
+    // sprintf without size checking
+    char final_buffer[30];
+    sprintf(final_buffer, "Result: %s", output_buffer);  // VULNERABLE
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Input processed\n";
+}
+
+// CWE-805: Buffer Access with Incorrect Length Value
+void BufferOverflowVulns::incorrect_buffer_length(const char* src, int wrong_length) {
+    std::cout << "[BufferOverflowVulns::incorrect_buffer_length]\n";
+    
+    /* START VULNERABILITY - CWE-805: Incorrect Buffer Length */
+    char dest[32];
+    
+    // Using wrong length value
+    memcpy(dest, src, wrong_length);  // VULNERABLE: wrong_length not validated
+    
+    // Another example with strncat using incorrect length
+    char buffer[40] = "Prefix: ";
+    strncat(buffer, src, wrong_length);  // VULNERABLE: length not checked against dest size
+    /* END VULNERABILITY */
+    
+    std::cout << "[DEBUG] Buffer operation complete\n";
 }
 
 // Helper functions
