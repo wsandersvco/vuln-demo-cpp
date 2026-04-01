@@ -1,5 +1,5 @@
 # ARM64 C++ Sample Project
-1.0.1
+1.0.2
 ## Requirements
 
 ### Linux/macOS Build
